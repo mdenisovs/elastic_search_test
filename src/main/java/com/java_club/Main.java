@@ -1,10 +1,8 @@
 package com.java_club;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.GetResponse;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.UpdateResponse;
+import co.elastic.clients.elasticsearch.core.*;
+import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
@@ -12,6 +10,7 @@ import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -38,7 +37,7 @@ public class Main {
                 .index("products")
         );
         Product p1 = new Product();
-        p1.setId("p1");
+        p1.setId(UUID.randomUUID().toString());
         p1.setName("guitar");
 
         // Add element to index
@@ -46,45 +45,55 @@ public class Main {
                 .index("products")
                 .id(p1.getId())
                 .document(p1));
-        System.out.println(response1);
+        System.out.println(response1 + "\n");
 
         // Get element by id
-        GetResponse<Product> response2 = esClient.get(g -> g
-                .index("products")
-                .id("p1"), Product.class);
-
-        if (response2.found()) {
-            Product product = response2.source();
-            System.out.println("Get Product: " + product.getName());
-        } else {
-            System.out.println("Product not found");
-        }
-
-        System.out.println("Indexed with version " + response2.version());
+        printGet(esClient, p1);
 
         SearchResponse<Product> searchResponse = esClient.search(s -> s
                 .index("products")
                 .query(q -> q.match(t -> t.field("name").query("guitar"))), Product.class);
 
+        System.out.println("Search result: " + searchResponse + "\n");
+
         p1.setName("electric guitar");
         UpdateResponse<Product> updResponse = esClient.update(u -> u
                         .index("products")
-                        .id("p1")
+                        .id(p1.getId())
                         .doc(p1)
                         .upsert(p1),
                 Product.class
         );
 
-        System.out.println("Updated: " + updResponse.get().source().getName());
+        System.out.println("Updated: " + updResponse + "\n");
+
+        printGet(esClient, p1);
 
         // delete element
-        esClient.delete(d -> d.index("products").id("p1"));
+        DeleteResponse delResponse = esClient.delete(d -> d.index("products").id(p1.getId()));
+        System.out.println("Delete response: " + delResponse + "\n");
 
         // delete index
-        esClient.indices().delete(d -> d
+        DeleteIndexResponse delIndexResp = esClient.indices().delete(d -> d
                 .index("products")
         );
+        System.out.println("Delete Index response: " + delIndexResp);
 
         esClient._transport().close();
+    }
+
+    private static void printGet(ElasticsearchClient esClient, Product p) throws IOException {
+        GetResponse<Product> response2 = esClient.get(g -> g
+                .index("products")
+                .id(p.getId()), Product.class);
+
+        if (response2.found()) {
+            Product product = response2.source();
+            System.out.println("Get Product: NAME:[" + product.getName() + "] ID:" + product.getId() + "\n");
+        } else {
+            System.out.println("Product not found");
+        }
+
+        System.out.println("Indexed with version " + response2.version() + "\n");
     }
 }
