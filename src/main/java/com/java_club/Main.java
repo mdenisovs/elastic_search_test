@@ -85,7 +85,6 @@ public class Main {
                 .index("products")
         );
 
-
         esClient._transport().close();
     }
 }
