@@ -2,6 +2,8 @@
 
 ### Install Elastic search with docker: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
 
+Single-node cluster:
+
 #### `docker network create elastic`
 
 #### `docker pull docker.elastic.co/elasticsearch/elasticsearch:7.17.21`
@@ -16,5 +18,35 @@
 
 ### To access Kibana, go to http://localhost:5601.
 
+### Logstash
+
+`docker pull docker.elastic.co/logstash/logstash:7.17.21`
+
+`docker run --rm -it -v ~/pipeline/:/usr/share/logstash/pipeline/ docker.elastic.co/logstash/logstash:7.17.21`
 
 ### Getting started (java client): https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.13/getting-started-java.html
+
+Some console commands:
+
+`PUT products
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1
+  }
+}`
+
+`GET _cat/shards/products?v`
+
+`POST products/_search 
+{
+  "query": {
+    "match": {
+      "name": "guitar"
+    }
+  }
+}`
+
+`GET /btc_usd_1h/_count`
+
+`DELETE /my-index-000001`

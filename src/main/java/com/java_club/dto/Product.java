@@ -1,4 +1,4 @@
-package com.java_club;
+package com.java_club.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
