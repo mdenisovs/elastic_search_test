@@ -1,9 +1,6 @@
 package com.java_club;
 
-import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.java_club.client.ElasticNode;
-import com.java_club.dto.Currency;
-import com.java_club.services.CurrencyService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

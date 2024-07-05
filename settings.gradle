@@ -1,2 +1,4 @@
 rootProject.name = 'elastic_search_test'
+include 'elastic_search_client_test'
+include 'elastic_search_logstash_test'
 

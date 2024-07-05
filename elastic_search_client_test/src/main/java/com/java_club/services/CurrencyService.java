@@ -20,7 +20,7 @@ import java.util.Objects;
 public class CurrencyService {
 
     public static final String INDEX = "btc_usd_1h";
-    private static final String FILE_PATH = "Bitstamp_BTCUSD_1h.csv";
+    private static final String FILE_PATH = "Bitstamp_BTCUSD_1h_1000.csv";
 
     @Getter
     private List<Currency> currencies;

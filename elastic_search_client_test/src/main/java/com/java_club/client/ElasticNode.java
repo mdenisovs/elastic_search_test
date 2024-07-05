@@ -116,7 +116,7 @@ public class ElasticNode {
         createIndex(CurrencyService.INDEX, 3, 1);
         currencyService.getCurrencies().forEach(currency -> {
             try {
-                addElement("btc_usd_1h", UUID.randomUUID().toString(), currency);
+                addElement(CurrencyService.INDEX, UUID.randomUUID().toString(), currency);
             } catch (IOException e) {
                 System.out.println("Unable to add element: " + e);
             }
